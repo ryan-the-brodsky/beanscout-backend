@@ -1,6 +1,8 @@
 ﻿using BeanScout.Services;
 using BeanScout.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Duende.IdentityServer.Stores;
 
 var builder = WebApplication.CreateBuilder(args);
 var dbConnectionString = builder.Configuration["BeanScout:ConnectionString"];
@@ -13,7 +15,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BeanScoutContext>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<BeanScoutContext>();
+                .AddEntityFrameworkStores<BeanScoutContext>()
+                .AddDefaultTokenProviders();
+builder.Services.AddIdentityServer()
+    .AddInMemoryCaching()
+    .AddClientStore<InMemoryClientStore>()
+    .AddResourceStore<InMemoryResourcesStore>()
+    .AddAspNetIdentity<IdentityUser>();
+builder.Services.AddAuthentication()
+.AddIdentityServerJwt();
 //builder.Services.AddSqlite<ReviewContext>("Data Source=BeanScout.db");
 builder.Services.AddScoped<ReviewService>();
 
@@ -28,6 +38,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
+app.UseIdentityServer();
 app.UseAuthorization();
 
 app.MapControllers();
