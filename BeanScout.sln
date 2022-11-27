@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1704.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeanScout", "BeanScout\BeanScout.csproj", "{34741B3A-1435-4791-8E6A-FBF255A795F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34741B3A-1435-4791-8E6A-FBF255A795F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34741B3A-1435-4791-8E6A-FBF255A795F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34741B3A-1435-4791-8E6A-FBF255A795F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34741B3A-1435-4791-8E6A-FBF255A795F8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C43BEABC-4314-4164-BC0C-A8B36B1F53C1}
+	EndGlobalSection
+EndGlobal
