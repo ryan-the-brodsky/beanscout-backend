@@ -14,9 +14,9 @@ namespace BeanScout.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        private readonly ReviewContext _context;
+        private readonly BeanScoutContext _context;
 
-        public ReviewController(ReviewContext context)
+        public ReviewController(BeanScoutContext context)
         {
             _context = context;
         }
@@ -88,7 +88,7 @@ namespace BeanScout.Controllers
         {
           if (_context.Reviews == null)
           {
-              return Problem("Entity set 'ReviewContext.Reviews'  is null.");
+              return Problem("Entity set 'BeanScoutContext.Reviews'  is null.");
           }
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();

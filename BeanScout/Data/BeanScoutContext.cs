@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BeanScout.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 namespace BeanScout.Data
 {
-	public class ReviewContext : DbContext
+	public class BeanScoutContext : IdentityDbContext<IdentityUser>
 	{
 		private readonly IConfiguration _config;
-		public ReviewContext(DbContextOptions<ReviewContext> options, IConfiguration config)
+		public BeanScoutContext(DbContextOptions<BeanScoutContext> options, IConfiguration config)
 			:base(options)
 		{
 			_config = config;

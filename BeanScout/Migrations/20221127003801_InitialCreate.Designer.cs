@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BeanScout.Migrations
 {
-    [DbContext(typeof(ReviewContext))]
+    [DbContext(typeof(BeanScoutContext))]
     [Migration("20221127003801_InitialCreate")]
     partial class InitialCreate
     {

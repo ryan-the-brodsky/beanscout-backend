@@ -6,9 +6,9 @@ namespace BeanScout.Services
 {
 	public class ReviewService
 	{
-		private readonly ReviewContext _context;
+		private readonly BeanScoutContext _context;
 
-		public ReviewService(ReviewContext context)
+		public ReviewService(BeanScoutContext context)
 		{
 			_context = context;
 		}
