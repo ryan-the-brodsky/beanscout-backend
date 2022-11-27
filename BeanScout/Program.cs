@@ -1,5 +1,6 @@
 ﻿using BeanScout.Services;
 using BeanScout.Data;
+using BeanScout.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Duende.IdentityServer.Stores;
@@ -10,6 +11,7 @@ var dbConnectionString = builder.Configuration["BeanScout:ConnectionString"];
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(Program));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
