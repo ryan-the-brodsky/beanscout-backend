@@ -48,6 +48,7 @@
     <None Remove="DataTransferObjects\" />
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="AutoMapper" />
+    <None Remove="JwtFeatures\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -55,5 +56,6 @@
     <Folder Include="Services\" />
     <Folder Include="Migrations\" />
     <Folder Include="DataTransferObjects\" />
+    <Folder Include="JwtFeatures\" />
   </ItemGroup>
 </Project>

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using BeanScout.Models;
 using AutoMapper;
 using BeanScout.DataTransferObjects;
+using BeanScout.JwtFeatures;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace BeanScout.Controllers
 {
@@ -13,10 +15,12 @@ namespace BeanScout.Controllers
 	{
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly IMapper _mapper;
-		public AccountController(UserManager<IdentityUser> userManager, IMapper mapper)
+		private readonly JwtHandler _jwtHandler;
+		public AccountController(UserManager<IdentityUser> userManager, IMapper mapper, JwtHandler jwtHandler)
 		{
 			_userManager = userManager;
 			_mapper = mapper;
+			_jwtHandler = jwtHandler;
 		}
 
 		[HttpPost("Registration")]
@@ -39,6 +43,22 @@ namespace BeanScout.Controllers
 
 			return StatusCode(201);
 		}
-	}
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthentication)
+        {
+            var user = await _userManager.FindByNameAsync(userForAuthentication.Email);
+
+            if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
+                return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
+
+            var signingCredentials = _jwtHandler.GetSigningCredentials();
+            var claims = _jwtHandler.GetClaims(user);
+            var tokenOptions = _jwtHandler.GenerateTokenOptions(signingCredentials, claims);
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+        }
+    }
 }
 
