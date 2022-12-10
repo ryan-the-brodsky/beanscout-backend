@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using BeanScout.Data;
 using BeanScout.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BeanScout.Controllers
 {
@@ -16,10 +17,12 @@ namespace BeanScout.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly BeanScoutContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ReviewController(BeanScoutContext context)
+        public ReviewController(BeanScoutContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/Review
@@ -92,6 +95,7 @@ namespace BeanScout.Controllers
           {
               return Problem("Entity set 'BeanScoutContext.Reviews'  is null.");
           }
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();
 
