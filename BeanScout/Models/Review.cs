@@ -6,7 +6,7 @@ namespace BeanScout.Models
 	{
 		public int Id { get; set; }
 
-		public User User { get; set; }
+		public User? User { get; set; }
 
 		[Required]
 		public int Rating { get; set; }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using BeanScout.Data;
 using BeanScout.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace BeanScout.Controllers
 {
@@ -95,7 +96,14 @@ namespace BeanScout.Controllers
           {
               return Problem("Entity set 'BeanScoutContext.Reviews'  is null.");
           }
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var email = HttpContext.User.Identity.Name;
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return Problem("User is somehow null");
+            }
+            review.User = (User)user;
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();
 
