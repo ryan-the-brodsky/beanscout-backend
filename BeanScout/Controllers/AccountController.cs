@@ -40,6 +40,7 @@ namespace BeanScout.Controllers
 
 				return BadRequest(new RegistrationResponseDto { Errors = errors });
 			}
+			
 
 			return StatusCode(201);
 		}
@@ -51,13 +52,13 @@ namespace BeanScout.Controllers
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
                 return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
-
+			User confirmedUser = (User)user;
             var signingCredentials = _jwtHandler.GetSigningCredentials();
             var claims = _jwtHandler.GetClaims(user);
             var tokenOptions = _jwtHandler.GenerateTokenOptions(signingCredentials, claims);
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token, FirstName = confirmedUser.FirstName, LastName = confirmedUser.LastName });
         }
     }
 }

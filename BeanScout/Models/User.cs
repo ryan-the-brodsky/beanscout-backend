@@ -26,9 +26,6 @@ namespace BeanScout.Models
         public override bool PhoneNumberConfirmed { get; set; }
 
         [JsonIgnore]
-        public override string PasswordHash { get; set; }
-
-        [JsonIgnore]
         public override string SecurityStamp { get; set; }
 
         [JsonIgnore]
