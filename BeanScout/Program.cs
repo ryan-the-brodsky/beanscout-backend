@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BeanScout.JwtFeatures;
+using BeanScout.Services.EmailService;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,9 +33,16 @@ builder.Services.AddSwaggerGen(swagger =>
     })
 );
 builder.Services.AddDbContext<BeanScoutContext>();
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<BeanScoutContext>()
-                .AddDefaultTokenProviders();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    //options.SignIn.RequireConfirmedEmail = true;
+    options.SignIn.RequireConfirmedAccount = true;
+    options.User.RequireUniqueEmail = true;
+    //options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
+}
+    )
+    .AddEntityFrameworkStores<BeanScoutContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddIdentityServer()
     .AddInMemoryCaching()
     .AddClientStore<InMemoryClientStore>()
@@ -63,6 +71,7 @@ builder.Services.AddAuthentication(opt =>
 //builder.Services.AddSqlite<ReviewContext>("Data Source=BeanScout.db");
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<JwtHandler>();
+builder.Services.AddScoped<EmailSender>();
 
 
 var app = builder.Build();

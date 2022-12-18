@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +50,8 @@
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="AutoMapper" />
     <None Remove="JwtFeatures\" />
+    <None Remove="Services\EmailService\" />
+    <None Remove="NETCore.MailKit" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -57,5 +60,6 @@
     <Folder Include="Migrations\" />
     <Folder Include="DataTransferObjects\" />
     <Folder Include="JwtFeatures\" />
+    <Folder Include="Services\EmailService\" />
   </ItemGroup>
 </Project>

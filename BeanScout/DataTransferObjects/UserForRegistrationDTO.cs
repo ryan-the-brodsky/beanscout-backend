@@ -19,7 +19,7 @@ namespace BeanScout.DataTransferObjects
 
     public class RegistrationResponseDto
     {
-        public bool IsSuccessfulRegistration { get; set; }
+        public bool IsAuthSuccessful { get; set; }
         public IEnumerable<string>? Errors { get; set; }
     }
 }
