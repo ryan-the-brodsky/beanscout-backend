@@ -37,6 +37,9 @@ builder.Services.AddSwaggerGen(swagger =>
 builder.Services.AddDbContext<BeanScoutContext>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
+    options.Lockout.AllowedForNewUsers = true;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    options.Lockout.MaxFailedAccessAttempts = 5;
     //options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedAccount = true;
     options.User.RequireUniqueEmail = true;
