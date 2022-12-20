@@ -7,9 +7,11 @@ using Duende.IdentityServer.Stores;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Configuration;
 using BeanScout.JwtFeatures;
 using BeanScout.Services.EmailService;
 using Microsoft.OpenApi.Models;
+using BeanScout.CustomTokenProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 var dbConnectionString = builder.Configuration["BeanScout:ConnectionString"];
@@ -38,11 +40,14 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     //options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedAccount = true;
     options.User.RequireUniqueEmail = true;
-    //options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
+    options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
 }
     )
     .AddEntityFrameworkStores<BeanScoutContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddTokenProvider<EmailConfirmationTokenProvider<IdentityUser>>("emailconfirmation");
+builder.Services.Configure<EmailConfirmationTokenProviderOptions>(opt =>
+     opt.TokenLifespan = TimeSpan.FromDays(3));
 builder.Services.AddIdentityServer()
     .AddInMemoryCaching()
     .AddClientStore<InMemoryClientStore>()
@@ -69,6 +74,11 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 //builder.Services.AddSqlite<ReviewContext>("Data Source=BeanScout.db");
+var emailConfig = builder.Configuration
+     .GetSection("BeanScout")
+     .GetSection("EmailSettings")
+     .Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<JwtHandler>();
 builder.Services.AddScoped<EmailSender>();

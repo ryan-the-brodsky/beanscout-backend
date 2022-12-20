@@ -52,6 +52,7 @@
     <None Remove="JwtFeatures\" />
     <None Remove="Services\EmailService\" />
     <None Remove="NETCore.MailKit" />
+    <None Remove="CustomTokenProviders\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -61,5 +62,6 @@
     <Folder Include="DataTransferObjects\" />
     <Folder Include="JwtFeatures\" />
     <Folder Include="Services\EmailService\" />
+    <Folder Include="CustomTokenProviders\" />
   </ItemGroup>
 </Project>

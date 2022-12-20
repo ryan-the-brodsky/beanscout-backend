@@ -8,6 +8,7 @@ using BeanScout.JwtFeatures;
 using System.IdentityModel.Tokens.Jwt;
 using BeanScout.Services.EmailService;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Web;
 
 namespace BeanScout.Controllers
 {
@@ -47,7 +48,7 @@ namespace BeanScout.Controllers
 
             var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token = emailToken, email = user.Email }, Request.Scheme);
-            var message = new Message(user.Email, "Confirmation email link", $"Please confirm your account by clicking this link: {confirmationLink}");
+            var message = new Message(user.Email, "Confirmation email link", confirmationLink);
             await _emailSender.SendEmailAsync(message);
 
 			return Created("/api/account/registration", user);
