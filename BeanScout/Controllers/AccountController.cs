@@ -9,6 +9,10 @@ using System.IdentityModel.Tokens.Jwt;
 using BeanScout.Services.EmailService;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Web;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using System.Net;
 
 namespace BeanScout.Controllers
 {
@@ -103,6 +107,101 @@ namespace BeanScout.Controllers
             var result = await _userManager.ConfirmEmailAsync(user, token);
             return Ok(result.Succeeded ? nameof(ConfirmEmail) : "Error");
         }
+
+		[HttpPost("ForgotPassword")]
+		public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordDTO forgotPasswordDto)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest();
+
+			var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
+			if (user == null)
+				return BadRequest("Invalid Request");
+
+			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+			var param = new Dictionary<string, string?>
+			{
+				{"token", token },
+				{"email", forgotPasswordDto.Email }
+			};
+
+			var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
+			var message = new Message(user.Email, "Reset password token", callback);
+
+			await _emailSender.SendEmailAsync(message);
+			return Ok();
+		}
+
+		[HttpPost("ResetPassword")]
+		public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDto)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest();
+
+			var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+
+			if (user == null)
+				return BadRequest();
+
+			User confirmedUser = (User)user;
+
+			var passwordReset = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+			if(!passwordReset.Succeeded)
+			{
+				var errors = passwordReset.Errors.Select(e => e.Description);
+				return BadRequest(new { Errors = errors });
+			}
+
+			return Ok();
+		}
+		//https://github.com/xamarin/Essentials/blob/develop/Samples/Sample.Server.WebAuthenticator/Controllers/MobileAuthController.cs
+		[HttpGet("google-auth")]
+		public async void GoogleAuth()
+		{
+			try
+			{
+                var auth = await Request.HttpContext.AuthenticateAsync("google");
+
+                if (!auth.Succeeded
+                    || auth?.Principal == null
+                    || !auth.Principal.Identities.Any(id => id.IsAuthenticated)
+                    || string.IsNullOrEmpty(auth.Properties.GetTokenValue("access_token")))
+                {
+                    // Not authenticated, challenge
+                    await Request.HttpContext.ChallengeAsync("google");
+
+                }
+                else
+                {
+                    var claims = auth.Principal.Identities.FirstOrDefault()?.Claims;
+                    var email = string.Empty;
+                    email = claims?.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value;
+
+                    // Get parameters to send back to the callback
+                    var qs = new Dictionary<string, string>
+                {
+                    { "access_token", auth.Properties.GetTokenValue("access_token") },
+                    { "refresh_token", auth.Properties.GetTokenValue("refresh_token") ?? string.Empty },
+                    { "expires", (auth.Properties.ExpiresUtc?.ToUnixTimeSeconds() ?? -1).ToString() },
+                    { "email", email }
+                };
+
+                    // Build the result url
+                    var url = "authtemplate" + "://google-auth-success" + string.Join(
+                        "&",
+                        qs.Where(kvp => !string.IsNullOrEmpty(kvp.Value) && kvp.Value != "-1")
+                        .Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
+
+                    // Redirect to final url
+                    Request.HttpContext.Response.Redirect(url);
+                }
+            }
+			catch(Exception e)
+			{
+				Console.WriteLine(e);		
+			}
+			
+		}
     }
 }
 
