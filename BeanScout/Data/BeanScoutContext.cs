@@ -15,7 +15,7 @@ namespace BeanScout.Data
 		}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql(_config["BeanScout:ConnectionString"]);
+            => optionsBuilder.UseNpgsql(_config["ConnectionString"]);
 
         public DbSet<Review> Reviews => Set<Review>();
 	}

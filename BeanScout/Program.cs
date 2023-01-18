@@ -15,7 +15,6 @@ using BeanScout.CustomTokenProviders;
 using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
-var dbConnectionString = builder.Configuration["BeanScout:ConnectionString"];
 
 // Add services to the container.
 
@@ -58,7 +57,7 @@ builder.Services.AddIdentityServer()
     .AddResourceStore<InMemoryResourcesStore>()
     .AddAspNetIdentity<IdentityUser>();
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var googleAuthSettings = builder.Configuration.GetSection("BeanScout").GetSection("Google");
+var googleAuthSettings = builder.Configuration.GetSection("Google");
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -87,7 +86,6 @@ builder.Services.AddAuthentication(opt =>
 });
 //builder.Services.AddSqlite<ReviewContext>("Data Source=BeanScout.db");
 var emailConfig = builder.Configuration
-     .GetSection("BeanScout")
      .GetSection("EmailSettings")
      .Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
